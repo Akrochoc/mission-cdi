@@ -99,11 +99,14 @@ function aProposerSansSuite(d){ var a=age(d); return groupeDe(d.s)==="attente" &
 var ONGLETS = [{id:"semaine", nom:"Agenda", note:""}]
   .concat(FICHES_INFO.map(function(f){ return {id:f.id, nom:f.nom, note:f.note||""}; }))
   .concat([{id:"suivi", nom:"Candidatures", note:""}, {id:"offres", nom:"Offres", note:""}]);
+// La fiche d'un dossier porte son id, ou le debut de son id ("exemple" pour
+// "exemple-chef-de-projet"). La plus longue correspondance l'emporte.
 function ficheDe(d){
-  var ids = ONGLETS.map(function(o){ return o.id; });
-  if(ids.indexOf(d.id)>=0) return d.id;
-  var racine = d.id.split("-")[0];
-  return ids.indexOf(racine)>=0 && racine!=="semaine" ? racine : null;
+  var trouve = null;
+  FICHES_INFO.forEach(function(f){
+    if((d.id===f.id || d.id.indexOf(f.id+"-")===0) && (!trouve || f.id.length>trouve.length)) trouve = f.id;
+  });
+  return trouve;
 }
 
 function bati(){

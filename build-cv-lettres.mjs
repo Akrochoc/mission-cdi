@@ -28,7 +28,7 @@ import { resolve } from 'path';
 for (const f of ['data/candidat.mjs', 'data/offres.mjs']) {
   if (!existsSync(f)) {
     const modele = f.replace('data/', 'templates/').replace('.mjs', '.example.mjs');
-    console.error(`Fichier manquant : ${f}\nCopie le modele puis remplis-le : cp ${modele} ${f}`);
+    console.error(`Fichier manquant : ${f}\nCopie le modèle puis remplis-le : cp ${modele} ${f}`);
     process.exit(1);
   }
 }
@@ -75,7 +75,7 @@ const FONTS = `
 function resoudre(liste, source, quoi) {
   return (liste || []).map((x) => {
     const base = source[x.ref];
-    if (!base) throw new Error(`${quoi} inconnue : "${x.ref}" (cles disponibles : ${Object.keys(source).join(', ')})`);
+    if (!base) throw new Error(`${quoi} inconnue : "${x.ref}" (clés disponibles : ${Object.keys(source).join(', ')})`);
     for (const k of x.keys) if (!base.bullets[k]) throw new Error(`Puce inconnue "${k}" dans ${quoi} "${x.ref}"`);
     return { ...base, keys: x.keys };
   });
@@ -110,7 +110,7 @@ function render(o) {
   const lang = o.lang || 'fr';
   const L = LABELS[lang];
   const T = C.textes[lang] || C.textes.fr;
-  const jobs = resoudre(o.jobs, C.experiences, 'Experience');
+  const jobs = resoudre(o.jobs, C.experiences, 'Expérience');
   const projets = resoudre(o.projets, C.projets || {}, 'Projet');
   return `<!DOCTYPE html>
 <html lang="${lang}">
@@ -358,10 +358,10 @@ if (aControler.length) {
     unlinkSync(tmp);
     const motifs = [];
     if (pages !== 1) motifs.push(`${pages} pages`);
-    if (lignes > 1) motifs.push(`competences sur ${lignes} lignes`);
+    if (lignes > 1) motifs.push(`compétences sur ${lignes} lignes`);
     if (motifs.length) { echecs++; console.log(`  ECHEC CONTROLE   ${c.label} : ${motifs.join(', ')}`); }
   }
   await nav.close();
-  console.log(echecs ? `\n${echecs} CV hors regles : raccourcis le resume, les puces ou les competences.` : `\nControles OK : ${aControler.length} CV sur une page, competences sur une ligne.`);
+  console.log(echecs ? `\n${echecs} CV hors règles : raccourcis le résumé, les puces ou les compétences.` : `\nContrôles OK : ${aControler.length} CV sur une page, compétences sur une ligne.`);
   if (echecs) process.exitCode = 1;
 }

@@ -9,7 +9,7 @@ Ce dépôt est un fork de [career-ops](https://github.com/santifer/career-ops) (
 ## Ce que ce fork ajoute
 
 1. **Le français par défaut.** Le profil d'exemple produit les rapports, CV et lettres en français, avec le vocabulaire du marché français (CDI, SYNTEC, RTT...).
-2. **Un cockpit de candidatures** (`cockpit/`) : une page qui regroupe l'agenda des entretiens, le suivi des candidatures (étapes, relances, prochaine action), les offres à trier, et une fiche de préparation par entretien, dont on choisit les sections affichées.
+2. **Un cockpit de candidatures** (`cockpit/`) : une page qui regroupe l'agenda des entretiens, le suivi des candidatures (étapes, relances, prochaine action), les offres à trier, et une fiche de préparation par entretien (interlocuteurs, entreprise, pitch, questions probables, mise en situation, questions à poser), dont on choisit les sections affichées. Claude Code sait la remplir et la publier : ses instructions sont dans `cockpit/INSTRUCTIONS.md`.
 3. **Un générateur de CV et de lettres** (`build-cv-lettres.mjs`) : un CV d'une page par offre, aux couleurs de l'entreprise, avec contrôle automatique de la mise en page.
 
 ## Démarrer
@@ -33,8 +33,10 @@ Le cockpit est une page HTML, construite à partir de quelques fichiers :
 |---|---|
 | `cockpit-coquille.html` | la mise en page et le style |
 | `donnees.js` | tes offres et une copie de secours de tes dossiers (à créer depuis `donnees.exemple.js`) |
-| `fiche-<id>.js` | une fiche de préparation par entretien (modèle dans `modeles/fiche-exemple.js`) |
+| `fiche-<id>.js` | une fiche de préparation par entretien (modèle dans `modeles/fiche-entretien.js`) |
 | `app.js`, `fiches.js` | la logique |
+| `synchro.mjs` | ajoute au cockpit les offres trouvées par le scan et les candidatures du suivi career-ops |
+| `INSTRUCTIONS.md` | la marche à suivre pour Claude Code |
 
 Pour le construire :
 
@@ -44,9 +46,19 @@ cp donnees.exemple.js donnees.js
 node assembler.mjs
 ```
 
+Au quotidien, tu n'as pas à toucher à ces fichiers : parle à Claude Code.
+
+- « Publie le cockpit » : il assemble la page et la publie comme artefact.
+- « Ajoute les offres du scan au cockpit » : il lance `node cockpit/synchro.mjs --offres` et note chaque offre.
+- « J'ai postulé chez X » ou « X m'a répondu » : il met le dossier à jour.
+- « J'ai un entretien jeudi à 14h avec Y, chez X » : il fait les recherches et écrit la fiche de préparation, avec les questions à poser.
+- « L'entretien s'est bien passé, voici mes notes » : il fait le bilan et te propose un mail de remerciement.
+
 Le plus pratique est de le publier comme **artefact Claude**, avec sa base partagée : demande à Claude Code de « publier `cockpit/cockpit.html` comme artefact avec la capacité db ». Tes candidatures vivent alors dans la base (collection `candidatures`), et tu peux changer une étape ou une prochaine action directement depuis la page. Claude peut aussi les mettre à jour pour toi : « passe le dossier X en entretien, jeudi 14h ».
 
-Attention : un artefact partagé par lien est lisible par toute personne qui a ce lien. Ne le partage pas.
+Attention : un artefact partagé par lien est lisible par toute personne qui a ce lien, et lors d'un test, un simple lecteur a pu écrire dans la base malgré la règle d'accès. Ne partage pas le lien.
+
+Les instructions sont chargées automatiquement par Claude Code. Avec un autre outil (Codex, OpenCode...), demande-lui de lire `cockpit/INSTRUCTIONS.md`.
 
 ## Le générateur de CV et de lettres
 
