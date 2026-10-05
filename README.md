@@ -1,4 +1,6 @@
-# Ma recherche d'emploi
+# Mission CDI
+
+> De l'offre repérée au contrat signé, ta recherche d'emploi pilotée avec Claude Code.
 
 Un poste de pilotage de recherche d'emploi, à utiliser avec [Claude Code](https://claude.com/claude-code) : évaluation des offres, CV et lettres adaptés à chaque annonce, suivi des candidatures et préparation des entretiens.
 
