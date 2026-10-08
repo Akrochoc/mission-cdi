@@ -188,3 +188,9 @@ cockpit/donnees.js
 cockpit/fiche-*.js
 logos/*
 !logos/.gitkeep
+
+# Les HTML intermediaires de l'exemple : seuls les PDF sont suivis.
+exemple/sorties/sources/
+
+# Le CV de l'exemple est fictif : il reste suivi malgre la regle cv.md.
+!exemple/cv.md

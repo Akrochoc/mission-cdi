@@ -10,7 +10,10 @@ Ce dépôt est un fork de [career-ops](https://github.com/santifer/career-ops) (
 
 1. **Le français par défaut.** Le profil d'exemple produit les rapports, CV et lettres en français, avec le vocabulaire du marché français (CDI, SYNTEC, RTT...).
 2. **Un cockpit de candidatures** (`cockpit/`) : une page qui regroupe l'agenda des entretiens, le suivi des candidatures (étapes, relances, prochaine action), les offres à trier, et une fiche de préparation par entretien (interlocuteurs, entreprise, pitch, questions probables, mise en situation, questions à poser), dont on choisit les sections affichées. Claude Code sait la remplir et la publier : ses instructions sont dans `cockpit/INSTRUCTIONS.md`.
-3. **Un générateur de CV et de lettres** (`build-cv-lettres.mjs`) : un CV d'une page par offre, aux couleurs de l'entreprise, avec contrôle automatique de la mise en page.
+3. **Un générateur de CV et de lettres** (`build-cv-lettres.mjs`) : un CV d'une page par offre, aux couleurs de l'entreprise, avec contrôle automatique de la mise en page. La façon de le remplir à partir d'une annonce est décrite dans [INSTRUCTIONS-CV-LETTRES.md](INSTRUCTIONS-CV-LETTRES.md).
+4. **Un mode de recherche** ([modes/fr/recherche.md](modes/fr/recherche.md)) : ce qu'il faut savoir d'une entreprise avant de lui écrire et avant de lui parler, en trois niveaux, avec les sources françaises (Pappers, BODACC, conventions collectives) et une règle simple, chaque chiffre porte sa source et sa date.
+5. **Des règles d'écriture** ([REGLES.md](REGLES.md)) et un contrôle automatique (`node verifier.mjs`) : pas de cadratin, les nombres en chiffres, l'ordre des expériences qui ne bouge pas, rien d'inventé, et les expressions qui trahissent un texte non relu.
+6. **Un exemple complet** ([exemple/](exemple/)) : une candidate fictive, de l'offre repérée à la fiche d'entretien, avec ses CV et ses lettres en PDF.
 
 ## Démarrer
 
@@ -23,7 +26,15 @@ npx playwright install chromium
 
 Ouvre ensuite Claude Code dans ce dossier. Au premier message, il vérifie l'installation et te guide pour créer ton CV (`cv.md`), ton profil (`config/profile.yml`) et tes critères de recherche (`portals.yml`). Dis-lui ton métier et le type de postes que tu vises : il adapte le système à ta cible.
 
-Ensuite, colle simplement le lien d'une offre : il l'évalue, rédige un rapport et prépare le CV.
+Ensuite, colle simplement le lien d'une offre : il l'évalue, cherche ce qu'il faut savoir sur l'entreprise, rédige un rapport et prépare le CV.
+
+Pour voir à quoi ressemble le résultat avant de donner tes propres données :
+
+```bash
+npm run exemple        # trois CV et deux lettres, dans exemple/sorties/
+```
+
+Le dossier [exemple/](exemple/) contient une candidature entière et fictive, de l'offre repérée à la fiche d'entretien.
 
 ## Le cockpit
 
@@ -73,11 +84,24 @@ node build-cv-lettres.mjs
 - Les PDF arrivent dans `output/<campagne>/CV` et `output/<campagne>/LM`.
 - Chaque CV est contrôlé : il doit tenir sur une page, et les compétences clés sur une ligne. Sinon, le script affiche `ECHEC CONTROLE`.
 
-Le plus simple : colle une annonce à Claude Code et demande-lui d'ajouter l'offre à `data/offres.mjs` à partir de ton CV, puis de lancer le générateur.
+Le plus simple : colle une annonce à Claude Code et demande-lui d'ajouter l'offre à `data/offres.mjs` à partir de ton CV, puis de lancer le générateur. Ce qu'il met dans chaque champ, et pourquoi, est écrit dans [INSTRUCTIONS-CV-LETTRES.md](INSTRUCTIONS-CV-LETTRES.md).
+
+## Les règles d'écriture
+
+[REGLES.md](REGLES.md) rassemble ce qui s'applique à tout ce que produit le dépôt : pas de cadratin, les nombres en chiffres, l'ordre des expériences qui ne change jamais, rien d'inventé sur toi, chaque chiffre d'entreprise avec sa source, les écarts nommés plutôt que cachés. Claude Code les charge automatiquement.
+
+Une partie se vérifie :
+
+```bash
+node verifier.mjs                 # les fichiers modifiés et non ignorés
+node verifier.mjs cockpit/        # un dossier
+```
 
 ## Tes données restent privées
 
 Les fichiers qui contiennent tes informations sont ignorés par git : `cv.md`, `config/profile.yml`, `portals.yml`, `data/`, `reports/`, `output/`, `interview-prep/`, `cockpit/donnees.js`, `cockpit/fiche-*.js`, `cockpit/cockpit.html` et `logos/`. Si tu publies ton propre fork, vérifie avec `git status` qu'aucun de ces fichiers n'apparaît avant de pousser.
+
+Le seul dossier de candidature suivi par git est `exemple/`, et il est entièrement fictif.
 
 ## Licence
 

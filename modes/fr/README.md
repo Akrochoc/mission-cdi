@@ -45,6 +45,7 @@ Cette premiere iteration couvre les quatre modes a plus fort impact :
 | `offre.md` | `modes/oferta.md` (ES) | Evaluation complete d'une offre (Blocs A-F) |
 | `postuler.md` | `modes/apply.md` (EN) | Assistant live pour remplir les formulaires de candidature |
 | `pipeline.md` | `modes/pipeline.md` (ES) | Inbox d'URLs / Second Brain pour les offres collectees |
+| `recherche.md` | propre a Mission CDI | Recherche sur une entreprise avant de postuler et avant un entretien, en trois niveaux, avec les sources francaises (Pappers, BODACC, conventions collectives) |
 
 Les autres modes (`scan`, `batch`, `pdf`, `tracker`, `outcome`, `auto-pipeline`, `deep`, `contacto`, `ofertas`, `project`, `training`) restent en EN/ES. Leur contenu est surtout du tooling, des chemins et des commandes -- il doit rester independant de la langue.
 

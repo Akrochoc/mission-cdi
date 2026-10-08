@@ -2,6 +2,8 @@
 
 Le cockpit (`cockpit/`) est une page HTML qui regroupe l'agenda, le suivi des candidatures, les offres et une fiche de préparation par entretien. Ces instructions décrivent cinq gestes : construire et publier, ajouter des offres, suivre une candidature, préparer un entretien, faire le bilan. Écris tout ce qui est destiné à l'utilisateur dans la langue de `language.output` (français par défaut).
 
+Avant d'écrire : les règles d'écriture sont dans `REGLES.md`, la méthode de recherche dans `modes/fr/recherche.md`, et un cockpit entièrement rempli sert d'exemple dans `exemple/` (`donnees.js` et `fiche-pilona.js`).
+
 ## Les fichiers
 
 | Fichier | Contenu | Suivi par git |
@@ -22,6 +24,16 @@ cd cockpit && node assembler.mjs
 ```
 
 L'assembleur prend `donnees.js` (ou `donnees.exemple.js` s'il n'existe pas), `fiches.js`, toutes les `fiche-*.js` et `app.js`.
+
+**Avant toute publication, obligatoirement :**
+
+```bash
+node verifier.mjs cockpit/
+```
+
+Il contrôle le JavaScript de chaque fiche, l'équilibre des balises, et l'absence de cadratin. Une publication avec une balise non fermée casse la page entière. Si l'outil de rendu est disponible, ouvre ensuite `cockpit/cockpit.html` et lis les erreurs de la console avant de publier.
+
+Sauvegarde une fiche avant de la modifier lourdement : `cp fiche-x.js fiche-x.js.avant-<motif>`. L'extension vient en premier dans le nom de la copie, sinon l'assembleur la prend pour une fiche de plus et produit un onglet en double.
 
 **Publication comme artefact Claude** (si l'outil de publication d'artefacts est disponible) : publie `cockpit/cockpit.html` avec la capacité de base partagée :
 
@@ -61,8 +73,8 @@ Le script ajoute les lignes non cochées de `data/pipeline.md` à `OFFRES`, sans
 
 Quand l'utilisateur annonce un entretien (« j'ai un entretien demain avec X », ou un mail de convocation collé) :
 
-1. **Rassemble** le dossier dans la base, le rapport d'évaluation dans `reports/`, l'annonce, la convocation, `cv.md` et `config/profile.yml`. S'il manque la date, l'heure, le format ou le nom des interlocuteurs, demande-les.
-2. **Cherche** sur Internet, en notant chaque source et sa date :
+1. **Rassemble** le dossier dans la base, le rapport d'évaluation et la recherche dans `reports/`, l'annonce, la convocation, `cv.md` et `config/profile.yml`. S'il manque la date, l'heure, le format ou le nom des interlocuteurs, demande-les.
+2. **Cherche** sur Internet, en notant chaque source et sa date. La méthode complète, les sources françaises et le squelette du document de recherche sont dans `modes/fr/recherche.md`, niveau 3. En résumé :
    - l'entreprise : activité, produit, clients, prix, taille, levées, résultats, actualité récente, recrutements en cours ;
    - les clients et leurs problèmes : c'est la matière des bonnes questions ;
    - les interlocuteurs : fonction et parcours **publics** seulement. Si l'identité n'est pas certaine, dis-le dans la fiche ;
@@ -74,12 +86,14 @@ Quand l'utilisateur annonce un entretien (« j'ai un entretien demain avec X »,
    - qui est en face ;
    - le pitch, relié aux exigences de l'annonce, avec des preuves tirées de `cv.md` ;
    - les questions probables, avec une trame de réponse pour chacune, y compris la question piège du parcours ;
-   - l'entreprise, le produit, les clients et leurs problèmes ;
-   - la mise en situation s'il y en a une, en tour par tour, avec les objections ;
+   - l'entreprise en cinq ou six faits datés, puis le produit en trente secondes, ses trois différenciateurs et ses concurrents ;
+   - pour un poste commercial : l'ICP, le persona et ses difficultés, une cible nommée avec son signal public daté, et une cible de secours ;
+   - la mise en situation s'il y en a une, en tour par tour, puis les objections et la réponse à chacune ;
    - **les questions à poser, propres à chaque interlocuteur** : chacune s'appuie sur un fait précis (un chiffre, une annonce, une déclaration) et montre que le candidat se projette dans le poste. Deux ou trois suffisent : indique l'ordre conseillé ;
-   - la rémunération (masquée par défaut).
+   - **l'antisèche** : leurs chiffres et les siens côte à côte, et les trois choses qu'ils doivent retenir de lui ;
+   - la rémunération et le vocabulaire du métier (masqués par défaut).
 
-   Masque par défaut (`data-defaut="cache"`) ce qui sert à relire la veille mais pas pendant l'entretien.
+   Masque par défaut (`data-defaut="cache"`) ce qui sert à relire la veille mais pas pendant l'entretien : le candidat garde à l'écran l'antisèche et ses questions. Un exemple rempli et complet est dans `exemple/fiche-pilona.js`.
 5. **Mets à jour le dossier** (statut `entretien`, étape, action, date, heure), puis reconstruis et republie.
 
 **Règles :**

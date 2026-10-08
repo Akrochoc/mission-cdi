@@ -13,8 +13,11 @@
  *   cp templates/candidat.example.mjs data/candidat.mjs
  *   cp templates/offres.example.mjs data/offres.mjs
  *
- * Usage : node build-cv-lettres.mjs [motif]
+ * Usage : node build-cv-lettres.mjs [motif] [--donnees <dossier>] [--sortie <dossier>]
  *   sans argument : toutes les offres ; avec un motif : celles dont le slug le contient.
+ *   --donnees : ou lire candidat.mjs et offres.mjs (data par defaut)
+ *   --sortie  : ou ecrire les PDF (output par defaut)
+ *   Exemple complet fourni : node build-cv-lettres.mjs --donnees exemple --sortie exemple/sorties
  *
  * Controles automatiques sur chaque CV : une seule page, competences cles sur
  * une seule ligne. Un ecart affiche ECHEC CONTROLE et le code de sortie vaut 1.
@@ -25,15 +28,27 @@ import { execSync } from 'child_process';
 import { pathToFileURL } from 'url';
 import { resolve } from 'path';
 
-for (const f of ['data/candidat.mjs', 'data/offres.mjs']) {
+// Arguments : un motif facultatif, et deux options de chemins.
+const args = process.argv.slice(2);
+function option(nom, defaut) {
+  const i = args.findIndex((a) => a === `--${nom}` || a.startsWith(`--${nom}=`));
+  if (i === -1) return defaut;
+  const [a] = args.splice(i, 1);
+  if (a.includes('=')) return a.split('=').slice(1).join('=');
+  return args.splice(i, 1)[0] || defaut;
+}
+const DONNEES = option('donnees', 'data').replace(/[/\\]$/, '');
+const SORTIE = option('sortie', 'output').replace(/[/\\]$/, '');
+
+for (const f of [`${DONNEES}/candidat.mjs`, `${DONNEES}/offres.mjs`]) {
   if (!existsSync(f)) {
-    const modele = f.replace('data/', 'templates/').replace('.mjs', '.example.mjs');
+    const modele = `templates/${f.split('/').pop().replace('.mjs', '.example.mjs')}`;
     console.error(`Fichier manquant : ${f}\nCopie le modèle puis remplis-le : cp ${modele} ${f}`);
     process.exit(1);
   }
 }
-const { CANDIDAT: C } = await import(pathToFileURL(resolve('data/candidat.mjs')).href);
-const { OFFRES, LETTRES = {} } = await import(pathToFileURL(resolve('data/offres.mjs')).href);
+const { CANDIDAT: C } = await import(pathToFileURL(resolve(`${DONNEES}/candidat.mjs`)).href);
+const { OFFRES, LETTRES = {} } = await import(pathToFileURL(resolve(`${DONNEES}/offres.mjs`)).href);
 
 const AUJ = new Date().toISOString().slice(0, 10);
 const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
@@ -299,13 +314,15 @@ ${corps}
 `;
 }
 
-// Chaque offre peut declarer sa campagne (sous-dossier de sortie) ; candidatures par defaut.
+// Chaque offre peut declarer sa campagne (sous-dossier de sortie) ; candidatures
+// par defaut, et une chaine vide ecrit directement dans le dossier de sortie.
 function chemins(o) {
-  const c = o.campagne || 'candidatures';
-  return { cvHtml: `output/sources/CV/${c}`, cvPdf: `output/${c}/CV`, lmHtml: `output/sources/LM/${c}`, lmPdf: `output/${c}/LM` };
+  const c = o.campagne === '' ? '' : (o.campagne || 'candidatures');
+  const sous = c ? `/${c}` : '';
+  return { cvHtml: `${SORTIE}/sources/CV${sous}`, cvPdf: `${SORTIE}${sous}/CV`, lmHtml: `${SORTIE}/sources/LM${sous}`, lmPdf: `${SORTIE}${sous}/LM` };
 }
 
-const motif = process.argv[2];
+const motif = args[0];
 const cibles = motif ? OFFRES.filter((o) => o.slug.toLowerCase().includes(motif.toLowerCase())) : OFFRES;
 if (!cibles.length) { console.log(motif ? `Aucune offre ne contient "${motif}".` : 'Aucune offre dans data/offres.mjs.'); process.exit(0); }
 

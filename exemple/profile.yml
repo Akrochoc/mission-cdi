@@ -1,0 +1,74 @@
+# Exemple complet : le profil de recherche.
+# Version courte, pour montrer les champs qui comptent en France.
+# Le modèle complet et commenté est dans config/profile.example.yml.
+# Dans ton usage réel, ce fichier s'appelle config/profile.yml (ignoré par git).
+
+candidate:
+  full_name: "Inès Barbier"
+  email: "ines.barbier@exemple.fr"
+  phone: "06 12 34 56 78"
+  location: "Lyon, France"
+  linkedin: "linkedin.com/in/ines-barbier-exemple"
+  photo: ""                      # CV sans photo par défaut
+
+target_roles:
+  primary:
+    - "Customer Success Manager"
+    - "Chargée de clientèle grands comptes"
+  archetypes:
+    - name: "Customer Success Manager"
+      level: "Confirmé"
+      fit: "primary"
+    - name: "Account Manager"
+      level: "Confirmé"
+      fit: "secondary"
+    - name: "Chef de projet client"
+      level: "Confirmé"
+      fit: "adjacent"
+
+narrative:
+  headline: "Relation client en mutuelle, en route vers le logiciel B2B"
+  exit_story: >
+    Je tiens un portefeuille de 320 entreprises et je suis responsable du renouvellement
+    de leurs contrats. Je veux faire le même métier sur un produit logiciel, auprès
+    d'équipes qui l'utilisent tous les jours.
+  superpowers:
+    - "Renouvellement : 94% de reconduction en 2025, contre 89% en 2024"
+    - "Volume : 40 à 60 demandes par jour sans perdre le fil d'un dossier"
+    - "Formation : 6 nouveaux conseillers accompagnés en 2025"
+
+compensation:
+  target_range: "36 à 40 K€"     # fixe annuel brut
+  currency: "EUR"
+  minimum: "34 K€"               # en dessous, je ne me déplace pas
+  location_flexibility: "Lyon et sa région, 2 jours de télétravail souhaités"
+
+location:
+  country: "France"
+  city: "Lyon"
+  timezone: "CET"
+  visa_status: "Ressortissante française, aucune démarche nécessaire"
+  authorized_in: ["France"]
+  needs_sponsorship: false
+
+language:
+  output: fr
+  modes_dir: modes/fr
+
+# Propre au marché français : ce qui compte dans une offre, au-delà du fixe.
+preferences:
+  contrat: "CDI"
+  conventions_connues: ["SYNTEC"]
+  avantages_recherches:
+    - "Télétravail 2 jours ou plus"
+    - "Titres-restaurant"
+    - "Mutuelle prise en charge au-delà de 50%"
+    - "Participation ou intéressement"
+  exclusions:
+    - "Postes 100% présentiel"
+    - "Déplacements supérieurs à 2 jours par semaine"
+
+spend_tier: standard
+
+cv:
+  output_format: "html"
